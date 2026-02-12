@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
+import API_URL from "./api";
 
-const socket = io("http://localhost:3001", {
+const socket = io(`${API_URL}`, {
   auth: {
     token: localStorage.getItem("token"),
   },

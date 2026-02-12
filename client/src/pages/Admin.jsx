@@ -1,8 +1,10 @@
+import API_URL from "../api";
+
 export default function Admin() {
     const token = localStorage.getItem("token");
   
     const loadAdminData = async () => {
-      const res = await fetch("http://localhost:3001/api/admin/stats", {
+      const res = await fetch(`${API_URL}/api/admin/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

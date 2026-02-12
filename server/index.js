@@ -19,24 +19,17 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 connectDB(); 
 
-const createAdmin = async() => {
-  const user = await User.create({
-	username:"admin",
-	password:"$2a$12$kYU66Pd3PFVax3/wpX8bkuF53HiBSFgPZ8k4kLONZKOzqGnyfpZIK",
-  });
-
-  console.log("User created: ", user.username);
-};
-
-
 const onlineUsers = new Map();
 
-
+const allowedOrigin = process.env.CLIENT_URL || "http://localhost:5173";
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true
+}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 
@@ -148,13 +141,14 @@ app.post("/api/messages", authMiddleware, async (req, res) => {
     res.status(201).json(message);
   });
 
+
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", 
+    origin: allowedOrigin,
     methods: ["GET", "POST"],
   },
 });
-
 
 io.use(async (socket, next) => {
     try {
@@ -203,7 +197,7 @@ io.on("connection", (socket) => {
 
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

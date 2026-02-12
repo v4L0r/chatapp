@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import socket from "../socket";
-
-
+import API_URL from "../api";
 
 export default function Chat() {
   const token = localStorage.getItem("token");
@@ -15,7 +14,7 @@ export default function Chat() {
 
   const loadHistory = async (username) => {
     const res = await fetch(
-      `http://localhost:3001/api/messages/${username}`,
+      `${API_URL}/api/messages/${username}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,7 +53,7 @@ export default function Chat() {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
   
-      const res = await fetch("http://localhost:3001/api/users", {
+      const res = await fetch(`${API_URL}/api/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -108,7 +107,7 @@ export default function Chat() {
 
     setMessages((prev) => [...prev, optimisticMessage]);
 
-    await fetch("http://localhost:3001/api/messages", {
+    await fetch(`${API_URL}/api/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
