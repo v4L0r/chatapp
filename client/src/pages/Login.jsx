@@ -1,64 +1,131 @@
-import {useState, useContext} from "react";
-import { AuthContext } from "./AuthContext";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "./AuthContext"; // Adjust path if needed
 import { useNavigate } from "react-router-dom";
-import API_URL from "../api";
+import API_URL from "../api"; // Adjust path if needed
+import { User, Lock, LogIn, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Login() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const { login } = useContext(AuthContext);
-    const navigate = useNavigate();
-    const handleSubmit = async (e)=> {
-        e.preventDefault();
-        
-        const res = await fetch(`${API_URL}/api/auth/login`, {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({username,password}),
-    });
-    
-    const data = await res.json();
-    
-    if (res.ok) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false); // Added for UI feedback
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
         login(data.token);
         navigate("/chat");
         alert("Logged in successfully.");
-    } else {
+      } else {
         alert(data.message);
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    };
+  };
 
-    return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+  return (
+    <div className="h-full w-full bg-gray-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
+      >
+        {/* Header Section */}
+        <div className="bg-emerald-600 p-8 text-center">
+          <div className="mx-auto bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-inner">
+            <LogIn className="text-white" size={32} />
+          </div>
+          <h2 className="text-3xl font-bold text-white tracking-tight">Welcome Back</h2>
+          <p className="text-emerald-100 mt-2 text-sm">Sign in to continue to your chat</p>
+        </div>
 
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+        {/* Form Section */}
+        <div className="p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Username Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 block">Username</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User size={18} className="text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-900"
+                />
+              </div>
+            </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            {/* Password Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 block">Password</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock size={18} className="text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+                </div>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-900"
+                />
+              </div>
+            </div>
 
-      <button type="submit">Login</button>
-    </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-all transform active:scale-[0.98] shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <span className="animate-pulse">Logging in...</span>
+              ) : (
+                <>
+                  Login <ArrowRight size={18} />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+        
+        {/* Footer Link */}
+        <div className="bg-gray-50 px-8 py-4 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <span 
+                    onClick={() => navigate('/register')} 
+                    className="text-emerald-600 font-semibold cursor-pointer hover:underline"
+                >
+                    Register here
+                </span>
+            </p>
+        </div>
+      </motion.div>
+    </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
