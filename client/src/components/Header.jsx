@@ -22,7 +22,7 @@ export default function Header() {
         <div className="p-2 bg-emerald-100 rounded-lg">
             <MessageSquare size={20} className="text-emerald-600" />
         </div>
-        <span className="font-bold text-xl tracking-tight text-gray-800">ChatApp</span>
+        <span className="font-bold text-xl tracking-tight text-gray-800">Vox</span>
       </div>
 
       {/* Right: User Info & Actions */}

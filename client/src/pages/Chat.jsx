@@ -207,9 +207,9 @@ export default function Chat() {
                 transition={{ duration: 0.5 }}
                 className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-4"
              >
-                <span className="text-4xl">👋</span>
+                <span className="text-4xl">💀</span>
              </motion.div>
-             <h2 className="text-2xl font-light text-gray-600">Welcome to Chat</h2>
+             <h2 className="text-2xl font-light text-gray-600">Welcome to Vox</h2>
              <p className="text-sm">Select a user to start messaging</p>
           </div>
         ) : (
